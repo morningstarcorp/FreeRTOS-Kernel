@@ -89,8 +89,21 @@
 #define portPRIVILEGED_EXECUTION_START_ADDRESS    ( 0UL )
 #define portMPU_REGION_VALID                      ( 0x10UL )
 #define portMPU_REGION_ENABLE                     ( 0x01UL )
+/** Modified by Morningstar Corp:
+Previously all tasks got MPU access to peripherals, which is very very
+dangerous (imagine an unpriv task's rogue pointer stomping on the PWM timer
+registers or GPIO outputs).  We redefine these constants to point to a
+nonexistent (nothing there) piece of memory; this is a lot simpler than
+rewriting the FreeRTOS MPU setup code to number its regions differently.
+Old original values:
 #define portPERIPHERALS_START_ADDRESS             0x40000000UL
 #define portPERIPHERALS_END_ADDRESS               0x5FFFFFFFUL
+
+Point to a nonexistent (nothing there) chunk of memory per above (see
+Reference Manual RM0433 2.3.2 "Memory map and register boundary addresses"):
+*/
+#define portPERIPHERALS_START_ADDRESS			0x00010000UL
+#define portPERIPHERALS_END_ADDRESS				0x000100FFUL
 
 /* ...then bits in the registers. */
 #define portNVIC_SYSTICK_INT_BIT                  ( 1UL << 1UL )
