@@ -768,10 +768,14 @@ static void prvRestoreContextOfFirstTask( void )
         " stmia r0, {r4-r11}                    \n" /* Write 4 sets of MPU registers [MPU Region # 4 - 7]. */
         "                                       \n"
     #if ( configTOTAL_MPU_REGIONS == 16 )
+        #if ( configAPP_RESERVED_MPU_REGION_GROUPS < 2 )
         " ldmia r2!, {r4-r11}                   \n" /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
         " stmia r0, {r4-r11}                    \n" /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
+        #endif
+        #if ( configAPP_RESERVED_MPU_REGION_GROUPS < 1 )
         " ldmia r2!, {r4-r11}                   \n" /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
         " stmia r0, {r4-r11}                    \n" /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+        #endif
     #endif /* configTOTAL_MPU_REGIONS == 16. */
         "                                       \n"
         " ldr r0, =0xe000ed94                   \n" /* MPU_CTRL register. */
@@ -1096,10 +1100,14 @@ void xPortPendSVHandler( void )
         " stmia r0, {r4-r11}                    \n" /* Write 4 sets of MPU registers [MPU Region # 4 - 7]. */
         "                                       \n"
     #if ( configTOTAL_MPU_REGIONS == 16 )
+        #if ( configAPP_RESERVED_MPU_REGION_GROUPS < 2 )
         " ldmia r2!, {r4-r11}                   \n" /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
         " stmia r0, {r4-r11}                    \n" /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
+        #endif
+        #if ( configAPP_RESERVED_MPU_REGION_GROUPS < 1 )
         " ldmia r2!, {r4-r11}                   \n" /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
         " stmia r0, {r4-r11}                    \n" /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+        #endif
     #endif /* configTOTAL_MPU_REGIONS == 16. */
         "                                       \n"
         " ldr r0, =0xe000ed94                   \n" /* MPU_CTRL register. */

@@ -118,10 +118,14 @@ xPortPendSVHandler:
 
 #ifdef configTOTAL_MPU_REGIONS
     #if ( configTOTAL_MPU_REGIONS == 16 )
-        ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
-        stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
-        ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
-        stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+        #if !defined( configAPP_RESERVED_MPU_REGION_GROUPS ) || ( configAPP_RESERVED_MPU_REGION_GROUPS < 2 )
+            ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
+            stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
+        #endif
+        #if !defined( configAPP_RESERVED_MPU_REGION_GROUPS ) || ( configAPP_RESERVED_MPU_REGION_GROUPS < 1 )
+            ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
+            stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+        #endif
     #endif /* configTOTAL_MPU_REGIONS == 16. */
 #endif
 
@@ -238,10 +242,14 @@ vPortRestoreContextOfFirstTask:
 
 #ifdef configTOTAL_MPU_REGIONS
     #if ( configTOTAL_MPU_REGIONS == 16 )
-        ldmia r2!, {r4-r11}                /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
-        stmia r0, {r4-r11}                 /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
-        ldmia r2!, {r4-r11}                /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
-        stmia r0, {r4-r11}                 /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+        #if !defined( configAPP_RESERVED_MPU_REGION_GROUPS ) || ( configAPP_RESERVED_MPU_REGION_GROUPS < 2 )
+            ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
+            stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
+        #endif
+        #if !defined( configAPP_RESERVED_MPU_REGION_GROUPS ) || ( configAPP_RESERVED_MPU_REGION_GROUPS < 1 )
+            ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
+            stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+        #endif
     #endif /* configTOTAL_MPU_REGIONS == 16. */
 #endif
 

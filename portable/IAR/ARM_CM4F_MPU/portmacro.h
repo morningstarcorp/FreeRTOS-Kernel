@@ -177,14 +177,30 @@ typedef unsigned long    UBaseType_t;
     #define configTEX_S_C_B_SRAM          ( 0x07UL )
 #endif
 
-#define portGENERAL_PERIPHERALS_REGION    ( configTOTAL_MPU_REGIONS - 5UL )
-#define portSTACK_REGION                  ( configTOTAL_MPU_REGIONS - 4UL )
-#define portUNPRIVILEGED_FLASH_REGION     ( configTOTAL_MPU_REGIONS - 3UL )
-#define portPRIVILEGED_FLASH_REGION       ( configTOTAL_MPU_REGIONS - 2UL )
-#define portPRIVILEGED_RAM_REGION         ( configTOTAL_MPU_REGIONS - 1UL )
+/* By default no app reserved regions */
+#ifndef configAPP_RESERVED_MPU_REGION_GROUPS
+	#define configAPP_RESERVED_MPU_REGION_GROUPS ( 0UL )
+#endif
+
+/* Reserved regions are only allowed with 16 MPU regions */
+#if (configTOTAL_MPU_REGIONS == 8) && (configAPP_RESERVED_MPU_REGION_GROUPS  > 0)
+  #error "Reserved MPU regions are only supported with 16 total MPU regions"
+#endif
+
+#define configTOTAL_FREERTOS_MPU_REGIONS (configTOTAL_MPU_REGIONS - (configAPP_RESERVED_MPU_REGION_GROUPS << 2))
+
+#if (configTOTAL_FREERTOS_MPU_REGIONS < 8)
+  #error "FreeRTOS requires at least 8 MPU regions to operate properly"
+#endif
+
+#define portGENERAL_PERIPHERALS_REGION    ( configTOTAL_FREERTOS_MPU_REGIONS - 5UL )
+#define portSTACK_REGION                  ( configTOTAL_FREERTOS_MPU_REGIONS - 4UL )
+#define portUNPRIVILEGED_FLASH_REGION     ( configTOTAL_FREERTOS_MPU_REGIONS - 3UL )
+#define portPRIVILEGED_FLASH_REGION       ( configTOTAL_FREERTOS_MPU_REGIONS - 2UL )
+#define portPRIVILEGED_RAM_REGION         ( configTOTAL_FREERTOS_MPU_REGIONS - 1UL )
 #define portFIRST_CONFIGURABLE_REGION     ( 0UL )
-#define portLAST_CONFIGURABLE_REGION      ( configTOTAL_MPU_REGIONS - 6UL )
-#define portNUM_CONFIGURABLE_REGIONS      ( configTOTAL_MPU_REGIONS - 5UL )
+#define portLAST_CONFIGURABLE_REGION      ( configTOTAL_FREERTOS_MPU_REGIONS - 6UL )
+#define portNUM_CONFIGURABLE_REGIONS      ( configTOTAL_FREERTOS_MPU_REGIONS - 5UL )
 #define portTOTAL_NUM_REGIONS_IN_TCB      ( portNUM_CONFIGURABLE_REGIONS + 1 ) /* Plus 1 to create space for the stack region. */
 
 #define portSWITCH_TO_USER_MODE()    __asm volatile ( " mrs r0, control \n orr r0, r0, #1 \n msr control, r0 " ::: "r0", "memory" )
